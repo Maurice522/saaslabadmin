@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { dateGenerator } from "../../utils/dategenerator";
 import { uidGenerator } from "../../utils/uidgenerator";
 import {
-  addDealInDatabase,
+  addbloginTL,
+  addbloginRR,
   getinvestorDealsFromDatabase,
   uploadMedia,
 } from "../../firebase/firebase";
@@ -27,8 +28,15 @@ const CreateDeal = () => {
   const [heading, setHeading] = useState("");
   const [img, setImg] = useState();
   const [body, setBody] = useState("");
+  const [topic, setTopic] = useState("");
   const [dealsAddLoading, setDealsAddLoading] = useState(false);
-
+  
+  const options = [
+    { value: 'Technology news and reviews', label: 'Technology news and reviews' },
+    { value: 'Product reviews', label: 'Product reviews' },
+    { value: 'Personal stories', label: 'Personal stories' },
+    { value: 'Industry analysis', label: 'Industry analysis' }
+  ]
 const navigate=useNavigate()
 
   
@@ -52,46 +60,12 @@ const navigate=useNavigate()
         heading,
         img:logoImg,
         body:body2,
-        timestamp:addedOn
+        timestamp:addedOn,
+        topic,
       }
       console.log(blogdata)
-      // const dealData = {
-  
-      //   pitchDeck: { docName: pitchDeckMedia?pitchDeckMedia.name:"", docUrl: pitchDeckUrl?pitchDeckUrl:"" },
-      //   projection: { docName: projectionMedia?projectionMedia.name:"", docUrl: projectionUrl?projectionUrl:"" },
-      //   dealDescription: {
-      //     shortDesc,
-      //     description,
-      //   },
-      //   faqs,
-      //   founders,
-      //   advisors,
-      //   dealHighlight,
-      //   investors,
-        
-      //   cardImages: {
-      //     // logo: { name: logo.name, logoUrl: logoImg },
-      //     // bgImage: { name: bgImg.name, bgUrl: bagdImg },
-      //     logo: { name: logo?logo.name:"", logoUrl: logoImg?logoImg:"" },
-      //     bgImage: { name: bgImg?bgImg.name:"", bgUrl: bagdImg?bagdImg:"" },
-      //   },
-      //   onePage: {
-      //     companyDescription,
-      //     problem,
-      //     solution,
-      //     tam,
-      //     sam,
-      //     som,
-      //     competitiveLandscape,
-      //     revenueModal,
-      //     growthStategy,
-      //     marketTraction,
-      //     fundingAmt,
-      //   },
-      //   meetings: meetings,
-      // };
 
-      await addDealInDatabase(uid, blogdata);
+      await addbloginTL(uid, blogdata);
       console.log("added");
       toast.success("blog Added")
       setTimeout(()=>{
@@ -105,6 +79,7 @@ const navigate=useNavigate()
 
   return (
     <>
+    <h1 style={{textAlign:"center"}}>Create blog for Tech Lens</h1>
       <div className="main__deal">
         <form onSubmit={onAddDealHandler}>
           <fieldset style={{ display: "flex" }}>
@@ -119,7 +94,7 @@ const navigate=useNavigate()
               placeholder="Author"
             />
             <input
-            style={{width:"85%"}}
+            style={{width:"55%"}}
               onChange={(e) => {
                 const newDate = dateGenerator();
                 if (e.target.files[0]) {
@@ -132,7 +107,9 @@ const navigate=useNavigate()
               }}
               type="file"
             />
-          
+            
+            <Select  options={options} onChange={(e)=>setTopic(e.value)} placeholder="Select Topic..."/>
+
             <textarea
               style={{width:"85%"}}
               rows="10"

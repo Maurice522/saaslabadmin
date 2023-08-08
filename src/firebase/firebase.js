@@ -155,20 +155,41 @@ export const getInvestorDealsFromDatabase = async () => {
     await (
       await getDocs(collection(database, `TLBlogs`))
     ).forEach((doc) => {
-      investorDeals.push({ ...doc.data() });
+      investorDeals.push({ ...doc.data(), id: doc.id });
     });
     return investorDeals;
   } catch (err) {
     console.log("Err: ", err);
   }
 };
-
+export const getRRBlogs = async () => {
+  try {
+    let investorDeals = [];
+    await (
+      await getDocs(collection(database, `RRBlogs`))
+    ).forEach((doc) => {
+      investorDeals.push({ ...doc.data(), id: doc.id });
+    });
+    return investorDeals;
+  } catch (err) {
+    console.log("Err: ", err);
+  }
+};
 // addDocs
 
-export const addDealInDatabase = async (uid, data) => {
+export const addbloginTL = async (uid, data) => {
   try {
     data.createdAt = new Date()
     return await setDoc(doc(database, "TLBlogs", uid), data);
+  } catch (err) {
+    console.log("Err: ", err);
+  }
+};
+
+export const addbloginRR = async (uid, data) => {
+  try {
+    data.createdAt = new Date()
+    return await setDoc(doc(database, "RRBlogs", uid), data);
   } catch (err) {
     console.log("Err: ", err);
   }
@@ -188,6 +209,22 @@ export const updateInvestorDetailsInDatabase = async (uid, data) => {
 export const deleteInvestorDetailsInDatabse = async (uid) => {
   try {
     return await deleteDoc(doc(database, "Investordeals", uid));
+  } catch (err) {
+    console.log("Err: ", err);
+  }
+};
+
+export const deleteTLBlog = async (uid) => {
+  try {
+    return await deleteDoc(doc(database, "TLBlogs", uid));
+  } catch (err) {
+    console.log("Err: ", err);
+  }
+};
+
+export const deleteRRBlog = async (uid) => {
+  try {
+    return await deleteDoc(doc(database, "RRBlogs", uid));
   } catch (err) {
     console.log("Err: ", err);
   }

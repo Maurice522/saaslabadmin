@@ -1,5 +1,6 @@
 import SignIn from "../pages/auth/SignIn";
 import CreateDeal from "../pages/createDeal/CreateDeal";
+import CreateDealRR from "../pages/createDeal/CreateDealRR";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Mentor from "../pages/mentordetails/Mentor";
 import ViewMentors from "../pages/mentordetails/ViewMentors";
@@ -45,6 +46,14 @@ const AppRoute = () => {
             <CreateDeal />
           </ProtectedRoute>
         }
+      />
+      <Route
+      path="/create-dealRR"
+      element={
+        <ProtectedRoute>
+          <CreateDealRR/>
+        </ProtectedRoute>
+      }
       />
       <Route
         path="/pptTemplate"

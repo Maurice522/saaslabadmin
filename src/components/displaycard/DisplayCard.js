@@ -17,7 +17,7 @@ import {
 import EditModal from "../editmodal/EditModal";
 import { useEffect, useState } from "react";
 
-const DisplayCard = ({ data }) => {
+const DisplayCard = ({ data , deleteBlog }) => {
   console.log(data);
   const dispatch = useDispatch();
   const [para, setPara] = useState();
@@ -39,12 +39,13 @@ const DisplayCard = ({ data }) => {
      })
      setPara(tempPara)
     }
-  },[])
+  },[data])
   return (
     <div className="display-card__wrap">
         <div style={{textAlign: "justify", marginTop:"3%"}}>
             <div style={{width: "64%", marginLeft: "18%"}}>
-                <h1 style={{color: "black", letterSpacing: "normal", wordSpacing: "normal", fontWeight: "900"}}>{data?.heading} </h1>
+                <h1 style={{color: "black", letterSpacing: "normal", wordSpacing: "normal", fontWeight: "900"}}>{data?.heading}  </h1>
+                <p style={{cursor:"pointer"}} onClick={()=>deleteBlog(data.id)}><span style={{color:"red"}}>Delete</span></p>
                 <div style={{display: "flex", justifyContent: "space-between"}}>
                     <p style={{color: "black", marginTop: "4px"}}>{data?.author}</p>
                     <p style={{color: "grey", fontSize: "13px", marginTop: "8px"}}>{data?.timestamp}</p>
@@ -55,6 +56,7 @@ const DisplayCard = ({ data }) => {
             </div>
             <div style={{width: "70%", marginLeft: "15%", marginTop: "50px"}}>
                 {para}
+                #{data.topic}
             </div>
         </div>
     </div>

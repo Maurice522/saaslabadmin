@@ -1,7 +1,7 @@
 import { useDispatch, useSelector } from "react-redux";
 import "./dashboard.css";
 import { Link } from "react-router-dom";
-import { addUniqueIdToFirebase, getInvestorDealsFromDatabase, getListOfUniqueId } from "../../firebase/firebase";
+import { addUniqueIdToFirebase, deleteRRBlog, deleteTLBlog, getInvestorDealsFromDatabase, getListOfUniqueId, getRRBlogs } from "../../firebase/firebase";
 import { useEffect, useState } from "react";
 import DisplayCard from "../../components/displaycard/DisplayCard";
 import { HourglassSplit } from "react-bootstrap-icons";
@@ -10,12 +10,17 @@ import emailjs from "@emailjs/browser";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import SendFormToFonder from "../../components/Send Form To Fonder/SendFormToFonder";
+import Tabs from "../../components/tabs/tabs";
+import { useNavigate } from "react-router-dom";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
   window.scroll(0, 0);
+  const navigate=useNavigate()
 const [isSendingFormBegin,setIsSendingFormBegin]=useState(false)
   const[sendFormClick,setSendFormClick]=useState(false)
+  const [rrb, setRrb] = useState();
+  const [isRR, setIsRR] = useState(false);
   const[sendFormData,setSendFormData]=useState({name:"",email:""})
   const [isLoading, setIsLoading] = useState(true);
   const getInvestorDeals = async () => {
@@ -23,12 +28,33 @@ const [isSendingFormBegin,setIsSendingFormBegin]=useState(false)
     if (results.length) {
       dispatch(setInvestorDeals([...results]));
     }
+    const res2 = await getRRBlogs();
+    if (res2.length) {
+      setRrb(res2)
+    }
     setIsLoading(false);
   };
 
   useEffect(() => {
     getInvestorDeals();
   }, []);
+
+  const deleteBlog = (uid) =>{
+    try{
+      console.log(isRR)
+      if(isRR){
+        deleteRRBlog(uid)
+      }else{
+        deleteTLBlog(uid)
+      }
+      toast.success("Blog Deleted");
+      setTimeout(()=>window.location.reload(false), 1000)
+      
+    }catch(err){
+      toast.error(err)
+    }
+
+  }
 
  const randomString=(length)=> {
     return Math.round((Math.pow(36, length + 1) - Math.random() * Math.pow(36, length))).toString(36).slice(1);
@@ -91,6 +117,9 @@ const sendDealToFounder=(e)=>{
             <Link to="/create-deal">
               <button>Create Tech Lens Blog</button>
             </Link>
+            <Link to="/create-dealRR" style={{marginTop:"20px"}}>
+              <button>Create Rise Relationship Blog</button>
+            </Link>
             {/* <Link style={{marginTop:"1rem"}} to="/pptTemplate">
               <button>Upload PPT Templates</button>
             </Link>
@@ -107,14 +136,26 @@ const sendDealToFounder=(e)=>{
             {/* <button onClick={() => dispatch(logout())}>Logout</button> */}
           </div>
           <div className="R_Container">
+          
             {isLoading ? (
               <h3>
-                Fetching <HourglassSplit /> Investor Deals
+                Fetching <HourglassSplit /> Blogs
               </h3>
             ) : (
-              investorDeals.investorDeals.map((data) => (
-                <DisplayCard key={data.id} data={data} />
+              <>
+              <Tabs setIsRR={setIsRR} isRR={isRR}/>
+              <div>
+              {isRR ? 
+              rrb.length>0 && rrb.map((data) => (
+                <DisplayCard key={data.id} data={data} deleteBlog={deleteBlog} />
+              )) 
+              : 
+              investorDeals.investorDeals.length>0 && investorDeals.investorDeals.map((data) => (
+                <DisplayCard key={data.id} data={data} deleteBlog={deleteBlog}/>
               ))
+              }
+              </div>
+              </>
             )}
           </div>
         </div>
