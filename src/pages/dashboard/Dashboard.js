@@ -39,16 +39,16 @@ const [isSendingFormBegin,setIsSendingFormBegin]=useState(false)
     getInvestorDeals();
   }, []);
 
-  const deleteBlog = (uid) =>{
+  const deleteBlog = async(uid) =>{
     try{
       console.log(isRR)
       if(isRR){
-        deleteRRBlog(uid)
+        await deleteRRBlog(uid)
       }else{
-        deleteTLBlog(uid)
+        await deleteTLBlog(uid)
       }
       toast.success("Blog Deleted");
-      setTimeout(()=>window.location.reload(false), 1000)
+      setTimeout(()=>getInvestorDeals(), 1000)
       
     }catch(err){
       toast.error(err)
